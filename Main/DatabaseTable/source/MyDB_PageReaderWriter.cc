@@ -3,16 +3,18 @@
 #define PAGE_RW_C
 
 #include "MyDB_PageReaderWriter.h"
+#include "MyDB_PageRecIterator.h"
 
 void MyDB_PageReaderWriter :: clear () {
+
 }
 
 MyDB_PageType MyDB_PageReaderWriter :: getType () {
 	return MyDB_PageType :: RegularPage;
 }
 
-MyDB_RecordIteratorPtr MyDB_PageReaderWriter :: getIterator (MyDB_RecordPtr) {
-	return nullptr;
+MyDB_RecordIteratorPtr MyDB_PageReaderWriter :: getIterator (MyDB_RecordPtr recordPtr) {
+	return make_shared<MyDB_PageRecIterator>(recordPtr, this->pagePtr);
 }
 
 void MyDB_PageReaderWriter :: setType (MyDB_PageType) {
