@@ -7,9 +7,11 @@
 #include "PageOverlay.h"
 
 void MyDB_PageReaderWriter :: clear () {
-	// Need to clear
+	// Clearing just need to reset offset.
+	PageOverlay *pageOverLay = (PageOverlay *)this->pageHandle->getBytes();
+	pageOverLay->offsetToNextUnwritten = 0;
 
-	this->setType(RegularPage);
+	this->setType(MyDB_PageType::RegularPage);
 }
 
 MyDB_PageType MyDB_PageReaderWriter :: getType () {

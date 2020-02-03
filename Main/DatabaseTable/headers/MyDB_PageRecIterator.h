@@ -29,8 +29,10 @@ public:
 	bool hasNext () {
                 PageOverlay *myPage = (PageOverlay *)this->pageHandle->getBytes();
                 char *nextSlot = myPage->bytes + offsetToNextRec + recordPtr->getBinarySize();
-                char *end = (char *)myPage + this->pageSize;
+                char *end = (char *)myPage + this->pageSize; // !
                 return nextSlot <= end;
+
+        
         }
 
 	// destructor and contructor
@@ -47,5 +49,6 @@ private:
         MyDB_PageHandle pageHandle;
         MyDB_RecordPtr recordPtr;
         unsigned int offsetToNextRec;
+
 };
 #endif

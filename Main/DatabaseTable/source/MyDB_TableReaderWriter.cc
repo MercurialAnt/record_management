@@ -8,10 +8,10 @@
 
 using namespace std;
 
-MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr, MyDB_BufferManagerPtr) {
+MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tablePtr, MyDB_BufferManagerPtr bufferMger) {
 }
 
-MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t) {
+MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t size) {
 	MyDB_PageReaderWriter temp;
 	return temp;	
 }
@@ -26,17 +26,17 @@ MyDB_PageReaderWriter MyDB_TableReaderWriter :: last () {
 }
 
 
-void MyDB_TableReaderWriter :: append (MyDB_RecordPtr) {
+void MyDB_TableReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 }
 
-void MyDB_TableReaderWriter :: loadFromTextFile (string) {
+void MyDB_TableReaderWriter :: loadFromTextFile (string text) {
 }
 
-MyDB_RecordIteratorPtr MyDB_TableReaderWriter :: getIterator (MyDB_RecordPtr) {
+MyDB_RecordIteratorPtr MyDB_TableReaderWriter :: getIterator (MyDB_RecordPtr recordPtr) {
 	return nullptr;
 }
 
-void MyDB_TableReaderWriter :: writeIntoTextFile (string) {
+void MyDB_TableReaderWriter :: writeIntoTextFile (string text) {
 }
 
 #endif
