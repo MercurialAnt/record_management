@@ -6,13 +6,7 @@
 #include "MyDB_TableReaderWriter.h"
 #include "MyDB_PageHandle.h"
 
-typedef struct PageBytesStruct PageOverlay;
 
-struct PageBytesStruct {
-	unsigned int offsetToNextUnwritten;
-	MyDB_PageType pageType; 
-   	char bytes[0]; /* this is where the data will be */
-};
 
 class MyDB_PageReaderWriter {
 

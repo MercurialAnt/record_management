@@ -4,6 +4,7 @@
 
 #include "MyDB_PageReaderWriter.h"
 #include "MyDB_PageRecIterator.h"
+#include "PageOverlay.h"
 
 void MyDB_PageReaderWriter :: clear () {
 	// Need to clear
