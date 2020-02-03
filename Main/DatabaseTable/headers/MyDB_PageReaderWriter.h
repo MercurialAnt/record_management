@@ -4,12 +4,19 @@
 
 #include "MyDB_PageType.h"
 #include "MyDB_TableReaderWriter.h"
-#include "MyDB_Page.h"
+#include "MyDB_PageHandle.h"
+
+typedef struct PageBytesStruct PageOverlay;
+
+struct PageBytesStruct {
+	unsigned int offsetToNextUnwritten;
+	MyDB_PageType pageType; 
+   	char bytes[0]; /* this is where the data will be */
+};
 
 class MyDB_PageReaderWriter {
 
 public:
-
 	// ANY OTHER METHODS YOU WANT HERE
 
 	// empties out the contents of this page, so that it has no records in it
@@ -32,10 +39,12 @@ public:
 	// sets the type of the page
 	void setType (MyDB_PageType toMe);
 
-	MyDB_PageReaderWriter(MyDB_PagePtr pagePtr);
+	MyDB_PageReaderWriter(MyDB_PageHandle pageHandle, size_t pageSize);
 	
 private:
-	MyDB_PagePtr pagePtr;
+
+	MyDB_PageHandle pageHandle;
+	size_t pageSize;
 	
 };
 
