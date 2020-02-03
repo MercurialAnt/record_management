@@ -7,7 +7,7 @@
 #include "PageOverlay.h"
 
 void MyDB_PageReaderWriter :: clear () {
-	// Clearing just need to reset offset.
+	cout << "MyDB_PageReaderWriter clear called\n"; 
 	PageOverlay *pageOverLay = (PageOverlay *)this->pageHandle->getBytes();
 	pageOverLay->offsetToNextUnwritten = 0;
 
@@ -15,21 +15,25 @@ void MyDB_PageReaderWriter :: clear () {
 }
 
 MyDB_PageType MyDB_PageReaderWriter :: getType () {
+	cout << "MyDB_PageReaderWriter getType called\n"; 
 	PageOverlay *pageOverLay = (PageOverlay *)pageHandle->getBytes();
 	return pageOverLay->pageType;
 }
 
 MyDB_RecordIteratorPtr MyDB_PageReaderWriter :: getIterator (MyDB_RecordPtr recordPtr) {
-	return make_shared<MyDB_PageRecIterator>(recordPtr, this->pageHandle);
+	cout << "MyDB_PageReaderWriter getIterator called\n"; 
+	return make_shared<MyDB_PageRecIterator>(recordPtr, this);
 }
 
 void MyDB_PageReaderWriter :: setType (MyDB_PageType pageType) {
+	cout << "MyDB_PageReaderWriter setType called\n"; 
 	PageOverlay *pageOverLay = (PageOverlay *)pageHandle->getBytes();
 	pageOverLay->pageType = pageType;
 }
 
 bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr recordPtr) {
-	
+	cout << "MyDB_PageReaderWriter append called\n"; 
+
 	PageOverlay *myPage = (PageOverlay *)this->pageHandle->getBytes();
 	char *nextSlot = myPage->bytes + myPage->offsetToNextUnwritten + recordPtr->getBinarySize();
 	char *end = (char *)this->pageHandle->getBytes() + this->pageSize;

@@ -3,13 +3,13 @@
 
 #include "MyDB_PageType.h"
 
-typedef struct PageBytesStruct PageOverlay;
+// typedef PageOverlay;
 
-class PageBytesStruct {
+class PageOverlay {
 	public:
-        unsigned int offsetToNextUnwritten;
-        MyDB_PageType pageType; 
-        char bytes[0]; /* this is where the data will be */
+                unsigned int offsetToNextUnwritten;
+                MyDB_PageType pageType; 
+                char bytes[0]; /* this is where the data will be */
 };
 
 #endif
