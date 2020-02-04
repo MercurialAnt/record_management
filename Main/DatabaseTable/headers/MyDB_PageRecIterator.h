@@ -22,7 +22,9 @@ public:
                         PageOverlay *myPage = (PageOverlay *)this->pageHandle->getBytes();
                         void *next = recordPtr->fromBinary(&(myPage->bytes[this->offsetToNextRec]));
                         this->offsetToNextRec = (char *) next - &(myPage->bytes[0]);        
-                }
+                } else {
+			cout << "MyDB_PageRecIterator: no more rec's left\n"; 
+		}
                 
         };
 
@@ -33,8 +35,6 @@ public:
                 char *nextSlot = myPage->bytes + offsetToNextRec + recordPtr->getBinarySize();
                 char *end = (char *)myPage + this->pageReaderWriter->pageSize; 
                 return nextSlot <= end;
-
-        
         }
 
 	// destructor and contructor

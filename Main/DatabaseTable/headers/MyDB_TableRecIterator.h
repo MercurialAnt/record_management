@@ -4,29 +4,51 @@
 
 #include <memory>
 #include "MyDB_RecordIterator"
-
+#include "MyDB_TableReaderWriter.h"
+#include "MyDB_PageReaderWriter.h"
 using namespace std;
 
 class MyDB_TableRecIterator;
-
-// do we need a shared pointer? 
-
 class MyDB_TableRecIterator : public MyDB_RecordIterator {
 
 public:
-        // put the contents of the next record in the file/page into the iterator record
-	// this should be called BEFORE the iterator record is first examined
-	void getNext () = 0;
+	void getNext () {
+		cout << "MyDB_TableRecIterator getNext called\n"; 
+		if (hasNext()) {
+			if (this->pageRecIterator->hasNext()) {
+				this->pageRecIterator->getNext();
+			} else {
+				MyDB_PageReaderWriter pageRW = this->tableReaderWriter[++count];
+				this->pageRecIterator = pageRW->getIterator(this->recordPtr);
+			}
+		} else {
+			cout << "MyDB_TableRecIterator: no more rec's left\n"; 
+		}
+	};
 
-	// return true iff there is another record in the file/page
-	bool hasNext () = 0;
+	bool hasNext () {
+		if (this->pageRecIterator == nullptr) {
+			MyDB_PageReaderWriter pageRW = this->tableReaderWriter[count];
+			this->pageRecIterator = pageRW->getIterator(this->recordPtr);
+		}
+		bool iterHasNext = this->pageRecIterator->hasNext();
+		bool isLastPage = (count == int lastIdx = this->tablePtr->lastPage());
+		return (!iterHasNext) && isLastPage;
+	};
 
 	// destructor and contructor
 	MyDB_TableRecIterator () {};
-	~MyDB_TableRecIterator () {};
-        
+
+	~MyDB_TableRecIterator (MyDB_RecordPtr recordPtr, MyDB_TableReaderWriter *tableReaderWriter) {
+		this->tableReaderWriter = tableReaderWriter;
+		this->recordPtr = recordPtr;
+		count = 0;
+		pageRecIterator = nullptr; 
+	};
 private:
-
+	MyDB_TableReaderWriter *tableReaderWriter;
+	MyDB_RecordPtr recordPtr;
+	int count;
+	MyDB_PageRecIterator *pageRecIterator;
 };
-
 #endif

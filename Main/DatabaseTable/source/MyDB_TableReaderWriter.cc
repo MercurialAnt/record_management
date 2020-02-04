@@ -5,6 +5,8 @@
 #include <fstream>
 #include "MyDB_PageReaderWriter.h"
 #include "MyDB_TableReaderWriter.h"
+#include "MyDB_TableRecIterator.h"
+
 
 using namespace std;
 
@@ -14,10 +16,9 @@ MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tablePtr, MyDB_B
 }
 
 MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t size) {
-
-
-	MyDB_PageReaderWriter temp;
-	return temp;	
+	MyDB_PageHandle pageHandle = this->bufferMgr->getPage(this->tablePtr, size);
+	MyDB_PageReaderWriter *readerWriter = new MyDB_PageReaderWriter(pageHandle, this->bufferMgr->getPageSize());
+	return *readerWriter;	
 }
 
 MyDB_RecordPtr MyDB_TableReaderWriter :: getEmptyRecord () {
@@ -25,7 +26,6 @@ MyDB_RecordPtr MyDB_TableReaderWriter :: getEmptyRecord () {
 }
 
 MyDB_PageReaderWriter MyDB_TableReaderWriter :: last () {
-	MyDB_PageReaderWriter temp;
 	int lastIdx = this->tablePtr->lastPage(); // the index to the page
 	return (*this)[lastIdx];
 }
@@ -35,13 +35,13 @@ void MyDB_TableReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 
 void MyDB_TableReaderWriter :: loadFromTextFile (string text) {
 	//1. Open this text file 
-	//2. Read it in chunks of pages 
+	//2. Read it in chunks of pages.
 	//3. 
 
 }
 
 MyDB_RecordIteratorPtr MyDB_TableReaderWriter :: getIterator (MyDB_RecordPtr recordPtr) {
-	return nullptr;
+	return make_shared<MyDB_TableRecIterator>(recordPtr, this);
 }
 
 void MyDB_TableReaderWriter :: writeIntoTextFile (string text) {

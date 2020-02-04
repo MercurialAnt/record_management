@@ -48,6 +48,7 @@ public:
         MyDB_PageReaderWriter last ();
 
 private:
+	friend class MyDB_TableRecIterator;
 	MyDB_TablePtr tablePtr;
 	MyDB_BufferManagerPtr bufferMgr;
 
