@@ -52,6 +52,8 @@ private:
 	MyDB_TablePtr tablePtr;
 	MyDB_BufferManagerPtr bufferMgr;
 
+	// ! do we need a field here? keep track of all pagereaderwriter?
+
 };
 
 #endif

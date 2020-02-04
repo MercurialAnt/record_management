@@ -3,9 +3,11 @@
 #define TABLE_REC_ITER_H
 
 #include <memory>
-#include "MyDB_RecordIterator"
+#include "MyDB_RecordIterator.h"
 #include "MyDB_TableReaderWriter.h"
 #include "MyDB_PageReaderWriter.h"
+#include "MyDB_PageRecIterator.h"
+
 using namespace std;
 
 class MyDB_TableRecIterator;
@@ -18,8 +20,9 @@ public:
 			if (this->pageRecIterator->hasNext()) {
 				this->pageRecIterator->getNext();
 			} else {
-				MyDB_PageReaderWriter pageRW = this->tableReaderWriter[++count];
-				this->pageRecIterator = pageRW->getIterator(this->recordPtr);
+				MyDB_PageReaderWriter pageRW = (*(this->tableReaderWriter))[++count];
+				this->pageRecIterator = pageRW.getIterator(this->recordPtr);
+				this->pageRecIterator->getNext();
 			}
 		} else {
 			cout << "MyDB_TableRecIterator: no more rec's left\n"; 
@@ -28,18 +31,18 @@ public:
 
 	bool hasNext () {
 		if (this->pageRecIterator == nullptr) {
-			MyDB_PageReaderWriter pageRW = this->tableReaderWriter[count];
-			this->pageRecIterator = pageRW->getIterator(this->recordPtr);
+			MyDB_PageReaderWriter pageRW = (*(this->tableReaderWriter))[count];
+			this->pageRecIterator = pageRW.getIterator(this->recordPtr);
 		}
 		bool iterHasNext = this->pageRecIterator->hasNext();
-		bool isLastPage = (count == int lastIdx = this->tablePtr->lastPage());
+		bool isLastPage = (count == this->tableReaderWriter->tablePtr->lastPage());
 		return (!iterHasNext) && isLastPage;
 	};
 
 	// destructor and contructor
-	MyDB_TableRecIterator () {};
+	~MyDB_TableRecIterator () {};
 
-	~MyDB_TableRecIterator (MyDB_RecordPtr recordPtr, MyDB_TableReaderWriter *tableReaderWriter) {
+	MyDB_TableRecIterator (MyDB_RecordPtr recordPtr, MyDB_TableReaderWriter *tableReaderWriter) {
 		this->tableReaderWriter = tableReaderWriter;
 		this->recordPtr = recordPtr;
 		count = 0;
@@ -49,6 +52,6 @@ private:
 	MyDB_TableReaderWriter *tableReaderWriter;
 	MyDB_RecordPtr recordPtr;
 	int count;
-	MyDB_PageRecIterator *pageRecIterator;
+	MyDB_RecordIteratorPtr pageRecIterator; // ! this is actually a MyDB_PageRecordIterator
 };
 #endif

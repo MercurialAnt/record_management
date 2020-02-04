@@ -22,7 +22,7 @@ MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t size) {
 }
 
 MyDB_RecordPtr MyDB_TableReaderWriter :: getEmptyRecord () {
-	return nullptr;
+	return make_shared <MyDB_Record>(this->tablePtr->getSchema());
 }
 
 MyDB_PageReaderWriter MyDB_TableReaderWriter :: last () {

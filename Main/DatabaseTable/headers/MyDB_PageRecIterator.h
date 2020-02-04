@@ -9,8 +9,10 @@
 #include "PageOverlay.h"
 
 using namespace std;
-
 class MyDB_PageRecIterator;
+
+typedef shared_ptr <MyDB_PageRecIterator> MyDB_PageRecIteratorPtr;
+
 class MyDB_PageRecIterator : public MyDB_RecordIterator {
 
 public:
