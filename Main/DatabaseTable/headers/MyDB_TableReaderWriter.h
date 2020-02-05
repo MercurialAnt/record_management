@@ -4,6 +4,7 @@
 
 #include <memory>
 #include "MyDB_BufferManager.h"
+#include "MyDB_Page.h"
 #include "MyDB_Record.h"
 #include "MyDB_RecordIterator.h"
 #include "MyDB_Table.h"
@@ -30,6 +31,8 @@ public:
 	// append a record to the table
 	void append (MyDB_RecordPtr appendMe);
 
+	void addPageRW ();
+
 	// return an itrator over this table... each time returnVal->next () is
 	// called, the resulting record will be placed into the record pointed to
 	// by iterateIntoMe
@@ -49,9 +52,12 @@ public:
 
 private:
 	friend class MyDB_TableRecIterator;
+	
 	MyDB_TablePtr tablePtr;
 	MyDB_BufferManagerPtr bufferMgr;
-
+	vector<MyDB_PageReaderWriter *> pageRWs;
+	MyDB_RecordPtr recordBuffPtr;
+	int numPages;
 	// ! do we need a field here? keep track of all pagereaderwriter?
 
 };

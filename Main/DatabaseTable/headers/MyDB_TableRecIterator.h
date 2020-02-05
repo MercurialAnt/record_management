@@ -15,17 +15,15 @@ class MyDB_TableRecIterator : public MyDB_RecordIterator {
 
 public:
 	void getNext () {
-		cout << "MyDB_TableRecIterator getNext called\n"; 
+		// cout << "MyDB_TableRecIterator getNext called\n"; 
 		if (hasNext()) {
-			if (this->pageRecIterator->hasNext()) {
-				this->pageRecIterator->getNext();
-			} else {
+			if (!(this->pageRecIterator->hasNext())) {
 				MyDB_PageReaderWriter pageRW = (*(this->tableReaderWriter))[++count];
 				this->pageRecIterator = pageRW.getIterator(this->recordPtr);
-				this->pageRecIterator->getNext();
 			}
+			this->pageRecIterator->getNext();
 		} else {
-			cout << "MyDB_TableRecIterator: no more rec's left\n"; 
+			// cout << "MyDB_TableRecIterator: no more rec's left\n"; 
 		}
 	};
 
@@ -36,7 +34,8 @@ public:
 		}
 		bool iterHasNext = this->pageRecIterator->hasNext();
 		bool isLastPage = (count == this->tableReaderWriter->tablePtr->lastPage());
-		return (!iterHasNext) && isLastPage;
+		cout << this->tableReaderWriter->tablePtr->lastPage() << " " << count << "\n";
+		return iterHasNext || !isLastPage;
 	};
 
 	// destructor and contructor

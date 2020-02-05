@@ -35,11 +35,11 @@ public:
 
 	MyDB_PageReaderWriter() {};
 
-	MyDB_PageReaderWriter(MyDB_PageHandle pageHandle, size_t pageSize);
+	MyDB_PageReaderWriter(void *bytes, size_t pageSize);
 	
 private:
 	friend class MyDB_PageRecIterator;
-	MyDB_PageHandle pageHandle;
+	void *bytes;
 	size_t pageSize;
 	
 };
