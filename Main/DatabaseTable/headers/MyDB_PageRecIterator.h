@@ -21,9 +21,16 @@ public:
 	void getNext () {
                 // cout << "MyDB_PageRecIterator getNext called\n"; 
                 if (hasNext()) {
-                        char *bytes = pageOverlay->getBytes();
-                        void *next = recordPtr->fromBinary(&(bytes[offsetToNextRec]));
-                        this->offsetToNextRec = (char *) next - &(bytes[0]);        
+        //                 void *next = recordPtr->toBinary (&(static_cast<char *>(bytes)[curOffset]));
+	// pageOverlay->setOffset((char *) next - &(static_cast<char *>(bytes)[0]));
+                        void *bytes = pageOverlay->getBytes();
+                        cout << "HasNext bytes: " << bytes << endl;
+                        cout << "the bull : " << ((void *)(static_cast<char *>(bytes)) )<< endl;
+                        cout << "the bull : " << ((void *)(static_cast<char *>(bytes) + offsetToNextRec) )<< endl;
+                        cout << "offset : " << offsetToNextRec << endl;
+                        void *next = recordPtr->fromBinary((static_cast<char *>(bytes) + offsetToNextRec));
+                        cout << "next " << next << endl;
+                        this->offsetToNextRec = (char *) next - &(static_cast<char *>(bytes)[0]);        
                 } else {
 			cout << "MyDB_PageRecIterator: no more rec's left\n"; 
 		}
@@ -34,7 +41,7 @@ public:
 	bool hasNext () {
                 // cout << "MyDB_PageRecIterator hasNext called\n"; 
 
-                char *nextSlot = pageOverlay->getBytes() + offsetToNextRec + recordPtr->getBinarySize();
+                char *nextSlot = static_cast<char *>(pageOverlay->getBytes()) + offsetToNextRec + recordPtr->getBinarySize();
                 char *end = (char *)pageReaderWriter->pageHandle->getBytes() + pageReaderWriter->pageSize; 
 
                 return nextSlot <= end;

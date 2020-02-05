@@ -31,19 +31,26 @@ void MyDB_PageReaderWriter :: setType (MyDB_PageType pageType) {
 bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 	cout << "MyDB_PageReaderWriter append called\n"; 
 
-	char *bytes = pageOverlay->getBytes();
+	void *bytes = pageOverlay->getBytes();
 	unsigned int curOffset = pageOverlay->getOffset();
 
-	char *nextSlot = bytes + curOffset + recordPtr->getBinarySize();
-	char *end = (char *)(pageOverlay) + this->pageSize; //! is this cast correct?
+	cout << "record size : " << recordPtr->getBinarySize() << endl;
+	cout << "page size " << pageSize << endl;
+	cout << "bytes " << bytes << endl;
+	cout << "offset " << curOffset << endl;
+	char *nextSlot = static_cast<char *>(bytes) + curOffset + recordPtr->getBinarySize();
+	char *end = (char *)(pageOverlay->getPageHandleBytes()) + this->pageSize; //! is this cast correct?
+	cout << "nextSlot : " << (void *)nextSlot << endl;
+	cout << "end : " << (void *)end << endl;
+
 	if (nextSlot > end) {
 		cout << "MyDB_PageReaderWriter return false\n"; 
 		return false;
 	}
 
-    	void *next = recordPtr->toBinary (&(bytes[curOffset]));
-	pageOverlay->setOffset((char *) next - &(bytes[0]));
-
+    void *next = recordPtr->toBinary (&(static_cast<char *>(bytes)[curOffset]));
+	pageOverlay->setOffset((char *) next - &(static_cast<char *>(bytes)[0]));
+	cout << "new PageOverlay offset :" << pageOverlay->getOffset() << endl;
 	return true;
 }
 
