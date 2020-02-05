@@ -74,14 +74,16 @@ void MyDB_TableReaderWriter :: addPageRW () {
 void MyDB_TableReaderWriter :: loadFromTextFile (string text) {
 	cout << "Reading \n";
 
-	int fd = open (text.c_str (), O_CREAT | O_RDWR, 0666);
-	void *buf = malloc(this->recordBuffPtr->getBinarySize()); 
-	int i = 0;
-	while (read(fd, buf, this->recordBuffPtr->getBinarySize()) > 0) {
-		this->recordBuffPtr->fromBinary(buf);
+	ifstream file(text.c_str());
+	if (file.is_open()) {
+	string line;
+	while (getline(file, line)) {
+		this->recordBuffPtr->fromString(line);
 		append(this->recordBuffPtr);
-		cout << "Reading: " << i++ << "\n";
 	}
+	file.close();
+	}
+	
 	
 
 }
