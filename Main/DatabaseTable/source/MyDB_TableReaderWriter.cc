@@ -23,14 +23,16 @@ MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tablePtr, MyDB_B
 
 	int lastPage = this->tablePtr->lastPage();
 
-	if (lastPage < 0) {
-		this->tablePtr->setLastPage(0);
-	} else {
-		int i;
-		for (i = 0; i < lastPage; i++) {
-			addPageRW(i);
-		}
+	// if (lastPage < 0) {
+	// 	this->tablePtr->setLastPage(0);
+	// } else {
+	
+	int i;
+	for (i = 0; i <= lastPage; i++) {
+		addPageRW(i);
 	}
+
+	// }
 }
 
 MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t size) {
@@ -51,7 +53,7 @@ MyDB_PageReaderWriter MyDB_TableReaderWriter :: last () {
 }
 
 void MyDB_TableReaderWriter :: append (MyDB_RecordPtr recordPtr) {
-	if (this->tablePtr->lastPage() == 0) { // there are no pages in there
+	if (this->tablePtr->lastPage() == -1) { // there are no pages in there
 		addPageRW(0);
 	}
 
@@ -82,7 +84,10 @@ void MyDB_TableReaderWriter :: loadFromTextFile (string text) {
 	ifstream file(text.c_str());
 	if (file.is_open()) {
 	string line;
+	int counter = 1;
 	while (getline(file, line)) {
+		cout << line << "\n";
+		cout << counter++ << "\n";
 		this->recordBuffPtr->fromString(line);
 		append(this->recordBuffPtr);
 	}
