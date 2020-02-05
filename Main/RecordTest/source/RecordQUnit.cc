@@ -92,70 +92,70 @@ int main(int argc, char *argv[]) {
 		QUNIT_IS_TRUE(result);
 	}
 	FALLTHROUGH_INTENDED;
-	case 2:
-	{
-		// page hasNext
-		cout << "TEST 2..." << flush;
-		initialize();
-		bool result = false;
-		{
-			cout << "create manager..." << flush;
-			MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog>("catFile");
-			map <string, MyDB_TablePtr> allTables = MyDB_Table::getAllTables(myCatalog);
-			MyDB_BufferManagerPtr myMgr = make_shared <MyDB_BufferManager>(1024, 16, "tempFile");
+	// case 2:
+	// {
+	// 	// page hasNext
+	// 	cout << "TEST 2..." << flush;
+	// 	initialize();
+	// 	bool result = false;
+	// 	{
+	// 		cout << "create manager..." << flush;
+	// 		MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog>("catFile");
+	// 		map <string, MyDB_TablePtr> allTables = MyDB_Table::getAllTables(myCatalog);
+	// 		MyDB_BufferManagerPtr myMgr = make_shared <MyDB_BufferManager>(1024, 16, "tempFile");
 
-			cout << "create TableReaderWriter..." << flush;
-			MyDB_TableReaderWriter supplierTable(allTables["supplier"], myMgr);
-			MyDB_RecordPtr temp = supplierTable.getEmptyRecord();
+	// 		cout << "create TableReaderWriter..." << flush;
+	// 		MyDB_TableReaderWriter supplierTable(allTables["supplier"], myMgr);
+	// 		MyDB_RecordPtr temp = supplierTable.getEmptyRecord();
 
-			cout << "create PageIterator..." << flush;
-			MyDB_RecordIteratorPtr myIter = supplierTable[0].getIterator(temp);
+	// 		cout << "create PageIterator..." << flush;
+	// 		MyDB_RecordIteratorPtr myIter = supplierTable[0].getIterator(temp);
 
-			cout << "get result..." << flush;
-			result = myIter->hasNext();
+	// 		cout << "get result..." << flush;
+	// 		result = myIter->hasNext();
 
-			cout << "shutdown manager..." << flush;
-		}
-		if (result) cout << "CORRECT" << endl << flush;
-		else cout << "***FAIL***" << endl << flush;
-		QUNIT_IS_TRUE(result);
-	}
-	FALLTHROUGH_INTENDED;
-	case 3:
-	{
-		// count records with table iterator
-		cout << "TEST 3..." << flush;
-		initialize();
-		int counter = 0;
-		{
-			cout << "create manager..." << flush;
-			MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog>("catFile");
-			map <string, MyDB_TablePtr> allTables = MyDB_Table::getAllTables(myCatalog);
-			MyDB_BufferManagerPtr myMgr = make_shared <MyDB_BufferManager>(1024, 16, "tempFile");
+	// 		cout << "shutdown manager..." << flush;
+	// 	}
+	// 	if (result) cout << "CORRECT" << endl << flush;
+	// 	else cout << "***FAIL***" << endl << flush;
+	// 	QUNIT_IS_TRUE(result);
+	// }
+	// FALLTHROUGH_INTENDED;
+	// case 3:
+	// {
+	// 	// count records with table iterator
+	// 	cout << "TEST 3..." << flush;
+	// 	initialize();
+	// 	int counter = 0;
+	// 	{
+	// 		cout << "create manager..." << flush;
+	// 		MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog>("catFile");
+	// 		map <string, MyDB_TablePtr> allTables = MyDB_Table::getAllTables(myCatalog);
+	// 		MyDB_BufferManagerPtr myMgr = make_shared <MyDB_BufferManager>(1024, 16, "tempFile");
 
-			cout << "create TableReaderWriter..." << flush;
-			MyDB_TableReaderWriter supplierTable(allTables["supplier"], myMgr);
-			MyDB_RecordPtr temp = supplierTable.getEmptyRecord();
+	// 		cout << "create TableReaderWriter..." << flush;
+	// 		MyDB_TableReaderWriter supplierTable(allTables["supplier"], myMgr);
+	// 		MyDB_RecordPtr temp = supplierTable.getEmptyRecord();
 
-			cout << "create TableIterator..." << flush;
-			MyDB_RecordIteratorPtr myIter = supplierTable.getIterator(temp);
+	// 		cout << "create TableIterator..." << flush;
+	// 		MyDB_RecordIteratorPtr myIter = supplierTable.getIterator(temp);
 
-			cout << "count..." << flush;
-			while (myIter->hasNext()) {
-				myIter->getNext();
-				counter++;
-				cout << counter << "\n";
-				if (counter > 15000) {
-					break;
-				}
-			}
+	// 		cout << "count..." << flush;
+	// 		while (myIter->hasNext()) {
+	// 			myIter->getNext();
+	// 			counter++;
+	// 			cout << counter << "\n";
+	// 			if (counter > 15000) {
+	// 				break;
+	// 			}
+	// 		}
 
-			cout << "shutdown manager..." << flush;
-		}
-		if (counter == 10000) cout << "CORRECT" << endl << flush;
-		else cout << "***FAIL***" << endl << flush;
-		QUNIT_IS_EQUAL(counter, 10000);
-	}
+	// 		cout << "shutdown manager..." << flush;
+	// 	}
+	// 	if (counter == 10000) cout << "CORRECT" << endl << flush;
+	// 	else cout << "***FAIL***" << endl << flush;
+	// 	QUNIT_IS_EQUAL(counter, 10000);
+	// }
 	// FALLTHROUGH_INTENDED;
 	// case 4:
 	// {

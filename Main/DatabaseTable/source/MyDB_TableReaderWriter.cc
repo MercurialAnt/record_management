@@ -38,27 +38,40 @@ void MyDB_TableReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 	if (this->numPages == 0) {
 		addPageRW();
 	}
-	
-	if (!pageRWs.back()->append(recordPtr)) {
+	cout << "PageRW BACK: " << pageRWs.back() << "\n";
+
+	if (!(pageRWs.back()->append(recordPtr))) {
 		addPageRW();
 		append(recordPtr);
 	}
+	cout << "Appended new record rw \n";
 
 }
 
 void MyDB_TableReaderWriter :: addPageRW () {
+
 	MyDB_PagePtr newPage = make_shared<MyDB_Page>(this->tablePtr, this->numPages++, *(this->bufferMgr));
 	MyDB_PageReaderWriter *pageRW = new MyDB_PageReaderWriter(newPage->getBytes(newPage), this->bufferMgr->getPageSize());
+	cout << "Added new page rw \n";
+	cout << pageRW << "\n";
+	cout << "NewPage Get Bytes: " << newPage->getBytes(newPage) << "\n";
+	
+
 	pageRWs.push_back(pageRW);
 	this->tablePtr->setLastPage(this->numPages - 1);
+
 }
 
 void MyDB_TableReaderWriter :: loadFromTextFile (string text) {
+	cout << "Reading \n";
+
 	int fd = open (text.c_str (), O_CREAT | O_RDWR, 0666);
 	void *buf = malloc(this->recordBuffPtr->getBinarySize()); 
+	int i = 0;
 	while (read(fd, buf, this->recordBuffPtr->getBinarySize()) > 0) {
 		this->recordBuffPtr->fromBinary(buf);
 		append(this->recordBuffPtr);
+		cout << "Reading: " << i++ << "\n";
 	}
 	
 

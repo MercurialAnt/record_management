@@ -9,7 +9,7 @@ class PageOverlay {
 	public:
                 unsigned int offsetToNextUnwritten;
                 MyDB_PageType pageType; 
-                char bytes[0]; /* this is where the data will be */
+                char *bytes; /* this is where the data will be */
 };
 
 #endif
