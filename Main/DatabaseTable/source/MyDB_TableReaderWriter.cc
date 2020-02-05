@@ -9,6 +9,7 @@
 #include "MyDB_PageReaderWriter.h"
 #include "MyDB_TableReaderWriter.h"
 #include "MyDB_TableRecIterator.h"
+#include "MyDB_PageHandle.h"
 
 
 class MyDB_Page;
@@ -19,10 +20,18 @@ MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tablePtr, MyDB_B
 	this->bufferMgr = bufferMgr;
 	this->recordBuffPtr = make_shared <MyDB_Record>(this->tablePtr->getSchema());
 	this->numPages = 0;
+	if (this->tablePtr->lastPage() < 0) {
+		this->tablePtr->setLastPage(0);
+	}
 }
 
 MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t size) {
-	return *pageRWs[size];	
+	MyDB_PageHandle pageHandle = this->bufferMgr->getPage(tablePtr, size);
+	MyDB_PageReaderWriter *pageRW = new MyDB_PageReaderWriter(pageHandle, bufferMgr->getPageSize());
+
+	return *pageRW;
+
+	// return *pageRWs[size];	
 }
 
 MyDB_RecordPtr MyDB_TableReaderWriter :: getEmptyRecord () {
@@ -50,14 +59,14 @@ void MyDB_TableReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 
 void MyDB_TableReaderWriter :: addPageRW () {
 
-	MyDB_PagePtr newPage = make_shared<MyDB_Page>(this->tablePtr, this->numPages++, *(this->bufferMgr));
-	MyDB_PageReaderWriter *pageRW = new MyDB_PageReaderWriter(newPage->getBytes(newPage), this->bufferMgr->getPageSize());
-	cout << "Added new page rw \n";
-	cout << pageRW << "\n";
-	cout << "NewPage Get Bytes: " << newPage->getBytes(newPage) << "\n";
+	// MyDB_PagePtr newPage = make_shared<MyDB_Page>(this->tablePtr, this->numPages++, *(this->bufferMgr));
 	
+	MyDB_PageHandle pageHandle = this->bufferMgr->getPage(this->tablePtr, this->tablePtr->lastPage() + 1);
+	
+	MyDB_PageReaderWriter *pageRW = new MyDB_PageReaderWriter(pageHandle, this->bufferMgr->getPageSize());
 
-	pageRWs.push_back(pageRW);
+
+	pageRWs.push_back(pageRW); //! DO we still need this vector? not sure , maybe last page suffices
 	this->tablePtr->setLastPage(this->numPages - 1);
 
 }
