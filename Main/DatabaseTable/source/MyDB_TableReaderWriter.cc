@@ -5,7 +5,7 @@
 #include <fstream>
 #include <fcntl.h>
 #include <sys/stat.h>
-include <unistd.h>
+#include <unistd.h>
 #include "MyDB_PageReaderWriter.h"
 #include "MyDB_TableReaderWriter.h"
 #include "MyDB_TableRecIterator.h"
@@ -22,7 +22,7 @@ MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tablePtr, MyDB_B
 }
 
 MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t size) {
-	return pageRWs[size];	
+	return *pageRWs[size];	
 }
 
 MyDB_RecordPtr MyDB_TableReaderWriter :: getEmptyRecord () {
@@ -47,7 +47,7 @@ void MyDB_TableReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 }
 
 void MyDB_TableReaderWriter :: addPageRW () {
-	MyDB_PagePtr newPage = new MyDB_Page(this->tablePtr, this->numPages++, this->bufferMgr);
+	MyDB_PagePtr newPage = make_shared<MyDB_Page>(this->tablePtr, this->numPages++, *(this->bufferMgr));
 	MyDB_PageReaderWriter *pageRW = new MyDB_PageReaderWriter(newPage->getBytes(newPage), this->bufferMgr->getPageSize());
 	pageRWs.push_back(pageRW);
 	this->tablePtr->setLastPage(this->numPages - 1);
@@ -56,7 +56,6 @@ void MyDB_TableReaderWriter :: addPageRW () {
 void MyDB_TableReaderWriter :: loadFromTextFile (string text) {
 	int fd = open (text.c_str (), O_CREAT | O_RDWR, 0666);
 	void *buf = malloc(this->recordBuffPtr->getBinarySize()); 
-	int 
 	while (read(fd, buf, this->recordBuffPtr->getBinarySize()) > 0) {
 		this->recordBuffPtr->fromBinary(buf);
 		append(this->recordBuffPtr);
