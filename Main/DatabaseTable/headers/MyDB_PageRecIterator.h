@@ -19,11 +19,14 @@ public:
         // put the contents of the next record in the file/page into the iterator record
 	// this should be called BEFORE the iterator record is first examined
 	void getNext () {
-                // cout << "MyDB_PageRecIterator getNext called\n"; 
+                cout << "MyDB_PageRecIterator getNext called\n"; 
                 if (hasNext()) {
                         char *bytes = pageOverlay->getBytes();
                         void *next = recordPtr->fromBinary(&(bytes[offsetToNextRec]));
-                        this->offsetToNextRec = (char *) next - &(bytes[0]);        
+                        this->offsetToNextRec = (char *) next - &(bytes[0]); 
+                        cout << "MyDB_PageRecIterator offset: " << this->offsetToNextRec << endl; 
+ 
+
                 } else {
 			cout << "MyDB_PageRecIterator: no more rec's left\n"; 
 		}
@@ -32,12 +35,19 @@ public:
 
 	// return true iff there is another record in the file/page
 	bool hasNext () {
-                // cout << "MyDB_PageRecIterator hasNext called\n"; 
+                // cout << pageReaderWriter->pageHandle << endl;
+                // cout << (void *)pageReaderWriter->pageHandle->getBytes() << endl;
 
-                char *nextSlot = pageOverlay->getBytes() + offsetToNextRec + recordPtr->getBinarySize();
-                char *end = (char *)pageReaderWriter->pageHandle->getBytes() + pageReaderWriter->pageSize; 
+                // char *nextSlot = pageOverlay->getBytes() + offsetToNextRec + recordPtr->getBinarySize();
+                // char *end = (char *)pageReaderWriter->pageHandle->getBytes() + pageReaderWriter->pageSize; 
+                // return nextSlot <= end;
+                bool hasNext = offsetToNextRec < pageOverlay->getOffset();
+                cout << "MyDB_PageRecIterator hasNext: " << hasNext << endl; 
+                cout << "iter offset: " << offsetToNextRec << " overlay offset: " <<  pageOverlay->getOffset() << endl; 
 
-                return nextSlot <= end;
+
+                return offsetToNextRec < pageOverlay->getOffset();
+
         }
 
 	// destructor and contructor

@@ -29,7 +29,7 @@ MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tablePtr, MyDB_B
 	
 	int i;
 	for (i = 0; i <= lastPage; i++) {
-		addPageRW(i);
+		addPageRW(i, true);
 	}
 
 	// }
@@ -54,23 +54,22 @@ MyDB_PageReaderWriter MyDB_TableReaderWriter :: last () {
 
 void MyDB_TableReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 	if (this->tablePtr->lastPage() == -1) { // there are no pages in there
-		addPageRW(0);
+		addPageRW(0, false);
 	}
 
 	if (!(last().append(recordPtr))) {
-		addPageRW(tablePtr->lastPage() + 1);
+		addPageRW(tablePtr->lastPage() + 1, false);
 		append(recordPtr);
 	}
 
 }
 
-void MyDB_TableReaderWriter :: addPageRW (int pageNum) {
+void MyDB_TableReaderWriter :: addPageRW (int pageNum, bool isLoad) {
 
-	cout << "Table Last Page: " << this->tablePtr->lastPage() + 1 << "\n";
-	cout << "Table Page Num: " << pageNum << endl;
+	cout << "Table Last Page: " << this->tablePtr->lastPage() + 1 << " Table Page Num: " << pageNum << endl;
 
 	MyDB_PageHandle pageHandle = this->bufferMgr->getPage(this->tablePtr, pageNum);
-	MyDB_PageReaderWriter *pageRW = new MyDB_PageReaderWriter(pageHandle, this->bufferMgr->getPageSize());
+	MyDB_PageReaderWriter *pageRW = new MyDB_PageReaderWriter(pageHandle, this->bufferMgr->getPageSize(), isLoad);
 	pageRWs.push_back(pageRW); //! DO we still need this vector? not sure , maybe last page suffices
 
 	if (pageNum > tablePtr->lastPage()) 
@@ -87,7 +86,6 @@ void MyDB_TableReaderWriter :: loadFromTextFile (string text) {
 	int counter = 1;
 	while (getline(file, line)) {
 		cout << line << "\n";
-		cout << counter++ << "\n";
 		this->recordBuffPtr->fromString(line);
 		append(this->recordBuffPtr);
 	}

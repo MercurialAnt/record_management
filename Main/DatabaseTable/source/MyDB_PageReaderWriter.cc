@@ -8,34 +8,40 @@
 #include "MyDB_PageHandle.h"
 
 void MyDB_PageReaderWriter :: clear () {
-	cout << "MyDB_PageReaderWriter clear called\n"; 
+	// cout << "MyDB_PageReaderWriter clear called\n"; 
 	this->pageOverlay->setOffset(0);
 	this->setType(MyDB_PageType::RegularPage);
 }
 
 MyDB_PageType MyDB_PageReaderWriter :: getType () {
-	cout << "MyDB_PageReaderWriter getType called\n"; 
+	// cout << "MyDB_PageReaderWriter getType called\n"; 
 	return this->pageOverlay->getPageType();
 }
 
 MyDB_RecordIteratorPtr MyDB_PageReaderWriter :: getIterator (MyDB_RecordPtr recordPtr) {
-	cout << "MyDB_PageReaderWriter getIterator called\n"; 
+	// cout << "MyDB_PageReaderWriter getIterator called\n"; 
 	return make_shared<MyDB_PageRecIterator>(recordPtr, this);
 }
 
 void MyDB_PageReaderWriter :: setType (MyDB_PageType pageType) {
-	cout << "MyDB_PageReaderWriter setType called\n"; 
+	// cout << "MyDB_PageReaderWriter setType called\n"; 
 	this->pageOverlay->setPageType(MyDB_PageType::RegularPage);
 }
 
 bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr recordPtr) {
-	cout << "MyDB_PageReaderWriter append called\n"; 
+
 
 	char *bytes = pageOverlay->getBytes();
 	unsigned int curOffset = pageOverlay->getOffset();
-
 	char *nextSlot = bytes + curOffset + recordPtr->getBinarySize();
-	char *end = (char *)(pageOverlay) + this->pageSize; //! is this cast correct?
+	char *end = (char *)pageHandle->getBytes() + this->pageSize; 
+
+
+	// cout << "MyDB_PageReaderWriter append called\n"; 
+	// cout << "bytes: " << (void *)bytes << " curOffset: " << curOffset << endl;
+	// cout << "Nextslot: " << (void *)nextSlot << " End: " << (void *)end << endl;
+
+
 	if (nextSlot > end) {
 		cout << "MyDB_PageReaderWriter return false\n"; 
 		return false;
@@ -43,14 +49,18 @@ bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 
     	void *next = recordPtr->toBinary (&(bytes[curOffset]));
 	pageOverlay->setOffset((char *) next - &(bytes[0]));
+	pageHandle->wroteBytes(); //does this matter
 
 	return true;
 }
 
-MyDB_PageReaderWriter :: MyDB_PageReaderWriter(MyDB_PageHandle pageHandle, size_t pageSize) {
+MyDB_PageReaderWriter :: MyDB_PageReaderWriter(MyDB_PageHandle pageHandle, size_t pageSize, bool isLoad) {
 	this->pageHandle = pageHandle;
 	this->pageSize = pageSize;
 	this->pageOverlay = new PageOverlay(this->pageHandle);
+
+	if (!isLoad) //only set offset to 0 if we're not loading old pages
+		this->pageOverlay->setOffset(0);
 }
 
 

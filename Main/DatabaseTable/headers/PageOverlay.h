@@ -37,7 +37,7 @@ class PageOverlay {
                 PageOverlay(MyDB_PageHandle pageHandle) {
                         this->pageHandle = pageHandle;
                         this->pageOverlay = (PageOverlayStruct *)this->pageHandle->getBytes();
-                        this->pageOverlay->offsetToNextUnwritten = 0;
+                        // this->pageOverlay->offsetToNextUnwritten = 0;
                 };
 
                 ~PageOverlay() {};

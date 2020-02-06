@@ -33,8 +33,9 @@ public:
 			this->pageRecIterator = pageRW.getIterator(this->recordPtr);
 		}
 		bool iterHasNext = this->pageRecIterator->hasNext();
+
+		cout << "IterHasNext :" << iterHasNext << endl;
 		bool isLastPage = (count == this->tableReaderWriter->tablePtr->lastPage());
-		cout << this->tableReaderWriter->tablePtr->lastPage() << " " << count << "\n";
 		return iterHasNext || !isLastPage;
 	};
 

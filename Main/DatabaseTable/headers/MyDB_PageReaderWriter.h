@@ -33,7 +33,7 @@ public:
 	// sets the type of the page
 	void setType (MyDB_PageType toMe);
 
-	MyDB_PageReaderWriter(MyDB_PageHandle pageHandle, size_t pageSize);
+	MyDB_PageReaderWriter(MyDB_PageHandle pageHandle, size_t pageSize, bool isLoad);
 	
 private:
 	friend class MyDB_PageRecIterator;
