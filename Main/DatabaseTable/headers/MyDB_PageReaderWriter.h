@@ -5,7 +5,7 @@
 #include "MyDB_PageType.h"
 #include "MyDB_TableReaderWriter.h"
 #include "MyDB_PageHandle.h"
-
+#include "PageOverlay.h"
 
 
 class MyDB_PageReaderWriter {
@@ -33,13 +33,12 @@ public:
 	// sets the type of the page
 	void setType (MyDB_PageType toMe);
 
-	MyDB_PageReaderWriter() {};
-
-	MyDB_PageReaderWriter(void *pageBytes, size_t pageSize);
+	MyDB_PageReaderWriter(MyDB_PageHandle pageHandle, size_t pageSize, bool isLoad);
 	
 private:
 	friend class MyDB_PageRecIterator;
-	void *pageBytes;
+	MyDB_PageHandle pageHandle;
+	PageOverlay *pageOverlay;
 	size_t pageSize;
 	
 };

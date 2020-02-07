@@ -31,7 +31,7 @@ public:
 	// append a record to the table
 	void append (MyDB_RecordPtr appendMe);
 
-	void addPageRW ();
+	void addPageRW (int pageNum, bool isLoad);
 
 	// return an itrator over this table... each time returnVal->next () is
 	// called, the resulting record will be placed into the record pointed to

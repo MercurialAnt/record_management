@@ -21,9 +21,15 @@ public:
 	void getNext () {
                 // cout << "MyDB_PageRecIterator getNext called\n"; 
                 if (hasNext()) {
-                        PageOverlay *myPage = (PageOverlay *)this->pageReaderWriter->bytes;
-                        void *next = recordPtr->fromBinary(&(myPage->bytes[this->offsetToNextRec]));
-                        this->offsetToNextRec = (char *) next - &(myPage->bytes[0]);        
+                        char *bytes = pageOverlay->getBytes();
+
+                        void *next = recordPtr->fromBinary(&(bytes[offsetToNextRec]));
+                	recordPtr->recordContentHasChanged();
+
+                        this->offsetToNextRec = (char *) next - &(bytes[0]); 
+                        // cout << "MyDB_PageRecIterator offset: " << this->offsetToNextRec << endl; 
+ 
+
                 } else {
 			// cout << "MyDB_PageRecIterator: no more rec's left\n"; 
 		}
@@ -32,15 +38,18 @@ public:
 
 	// return true iff there is another record in the file/page
 	bool hasNext () {
-                // cout << "MyDB_PageRecIterator hasNext called\n"; 
-                PageOverlay *myPage = (PageOverlay *)this->pageReaderWriter->bytes;
-                char *nextSlot = myPage->bytes + offsetToNextRec + recordPtr->getBinarySize();
-                cout << recordPtr->getBinarySize() << "\n";
-                char *end = (char *)myPage + this->pageReaderWriter->pageSize; 
-                cout << "pagesize "<< this->pageReaderWriter->pageSize << "\n";
-                cout << "next slot " << nextSlot << "\n"; 
-                cout << "end " << end << "\n";
-                return nextSlot <= end;
+                // cout << pageReaderWriter->pageHandle << endl;
+                // cout << (void *)pageReaderWriter->pageHandle->getBytes() << endl;
+
+                // char *nextSlot = pageOverlay->getBytes() + offsetToNextRec + recordPtr->getBinarySize();
+                // char *end = (char *)pageReaderWriter->pageHandle->getBytes() + pageReaderWriter->pageSize; 
+                // return nextSlot <= end;
+                bool hasNext = offsetToNextRec < pageOverlay->getOffset();
+                // cout << "MyDB_PageRecIterator hasNext: " << hasNext << endl; 
+                // cout << "iter offset: " << offsetToNextRec << " overlay offset: " <<  pageOverlay->getOffset() << endl; 
+
+                return offsetToNextRec < pageOverlay->getOffset();
+
         }
 
 	// destructor and contructor
@@ -48,6 +57,7 @@ public:
                 this->pageReaderWriter = pageReaderWriter;
                 this->recordPtr = recordPtr;
                 this->offsetToNextRec = 0;
+                this->pageOverlay = pageReaderWriter->pageOverlay; //get it from page reader writer
         };
 
 	~MyDB_PageRecIterator () {};
@@ -57,6 +67,7 @@ private:
 
         MyDB_PageReaderWriter *pageReaderWriter;
         MyDB_RecordPtr recordPtr;
+        PageOverlay *pageOverlay;
         unsigned int offsetToNextRec;
 
 };
