@@ -18,7 +18,8 @@ public:
 		// cout << "MyDB_TableRecIterator getNext called\n"; 
 		if (hasNext()) {
 			if (!(this->pageRecIterator->hasNext())) {
-				MyDB_PageReaderWriter pageRW = (*(this->tableReaderWriter))[++count];
+				// ! somethign wrong here
+				MyDB_PageReaderWriter pageRW = (*(this->tableReaderWriter))[count++];
 				this->pageRecIterator = pageRW.getIterator(this->recordPtr);
 			}
 			this->pageRecIterator->getNext();
@@ -29,14 +30,19 @@ public:
 
 	bool hasNext () {
 		if (this->pageRecIterator == nullptr) {
-			MyDB_PageReaderWriter pageRW = (*(this->tableReaderWriter))[count];
+			MyDB_PageReaderWriter pageRW = (*(this->tableReaderWriter))[count++]; // count is 0
 			this->pageRecIterator = pageRW.getIterator(this->recordPtr);
 		}
-		bool iterHasNext = this->pageRecIterator->hasNext();
 
-		cout << "IterHasNext :" << iterHasNext << endl;
-		bool isLastPage = (count == this->tableReaderWriter->tablePtr->lastPage());
-		return iterHasNext || !isLastPage;
+		if (this->pageRecIterator->hasNext())
+			return true;
+
+		// lastPage() gets the index not the length
+		// ! something wrong here
+		bool isLastPage = (count == this->tableReaderWriter->tablePtr->lastPage()); 
+		cout << " Last Page:" << isLastPage << "LastPage num: " << this->tableReaderWriter->tablePtr->lastPage() << endl;
+
+		return !isLastPage;
 	};
 
 	// destructor and contructor

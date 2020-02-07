@@ -23,23 +23,29 @@ MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tablePtr, MyDB_B
 
 	int lastPage = this->tablePtr->lastPage();
 
-	// if (lastPage < 0) {
-	// 	this->tablePtr->setLastPage(0);
-	// } else {
-	
 	int i;
 	for (i = 0; i <= lastPage; i++) {
 		addPageRW(i, true);
 	}
 
-	// }
 }
 
 MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t size) {
-	// MyDB_PageHandle pageHandle = this->bufferMgr->getPage(tablePtr, size);
-	// MyDB_PageReaderWriter *pageRW = new MyDB_PageReaderWriter(pageHandle, bufferMgr->getPageSize());
-	// return *pageRW;
-	return *(pageRWs[size]);	
+
+	// ! somethign wrong here
+	// int curLastPage = tablePtr->lastPage();
+	// if (size <= curLastPage) {
+	// 	return *(pageRWs[size]);	
+	// }
+
+	// int i;
+	// for (i = curLastPage + 1; i <= size; i++) {
+	// 	addPageRW(i, false);
+	// }
+	cout << "operator : " << size << "lastpage: " << tablePtr->lastPage() << endl;
+	return *(pageRWs[size]);
+
+
 }
 
 MyDB_RecordPtr MyDB_TableReaderWriter :: getEmptyRecord () {
@@ -47,8 +53,6 @@ MyDB_RecordPtr MyDB_TableReaderWriter :: getEmptyRecord () {
 }
 
 MyDB_PageReaderWriter MyDB_TableReaderWriter :: last () {
-	// int lastIdx = this->tablePtr->lastPage(); // the index to the page
-	// return (*this)[lastIdx];
 	return *(pageRWs.back());
 }
 
@@ -59,19 +63,19 @@ void MyDB_TableReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 
 	if (!(last().append(recordPtr))) {
 		addPageRW(tablePtr->lastPage() + 1, false);
-		append(recordPtr);
+		last().append(recordPtr);
 	}
 
 }
 
 void MyDB_TableReaderWriter :: addPageRW (int pageNum, bool isLoad) {
 
-	cout << "Table Last Page: " << this->tablePtr->lastPage() + 1 << " Table Page Num: " << pageNum << endl;
+	cout << "Table Last Page: " << this->tablePtr->lastPage() << " Table Page Num: " << pageNum << endl;
 
-	MyDB_PageHandle pageHandle = this->bufferMgr->getPage(this->tablePtr, pageNum);
+ 	MyDB_PageHandle pageHandle = this->bufferMgr->getPage(this->tablePtr, pageNum);
 	MyDB_PageReaderWriter *pageRW = new MyDB_PageReaderWriter(pageHandle, this->bufferMgr->getPageSize(), isLoad);
-	pageRWs.push_back(pageRW); //! DO we still need this vector? not sure , maybe last page suffices
-
+	pageRWs.push_back(pageRW); 
+	cout << "PageRW Size:" << pageRWs.size() << endl;
 	if (pageNum > tablePtr->lastPage()) 
 		tablePtr->setLastPage(pageNum);
 
@@ -87,6 +91,8 @@ void MyDB_TableReaderWriter :: loadFromTextFile (string text) {
 	while (getline(file, line)) {
 		cout << line << "\n";
 		this->recordBuffPtr->fromString(line);
+		recordBuffPtr->recordContentHasChanged();
+
 		append(this->recordBuffPtr);
 	}
 	file.close();

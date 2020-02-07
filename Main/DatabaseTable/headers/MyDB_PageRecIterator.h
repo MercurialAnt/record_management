@@ -22,7 +22,10 @@ public:
                 cout << "MyDB_PageRecIterator getNext called\n"; 
                 if (hasNext()) {
                         char *bytes = pageOverlay->getBytes();
+
                         void *next = recordPtr->fromBinary(&(bytes[offsetToNextRec]));
+                	recordPtr->recordContentHasChanged();
+
                         this->offsetToNextRec = (char *) next - &(bytes[0]); 
                         cout << "MyDB_PageRecIterator offset: " << this->offsetToNextRec << endl; 
  
@@ -44,7 +47,6 @@ public:
                 bool hasNext = offsetToNextRec < pageOverlay->getOffset();
                 cout << "MyDB_PageRecIterator hasNext: " << hasNext << endl; 
                 cout << "iter offset: " << offsetToNextRec << " overlay offset: " <<  pageOverlay->getOffset() << endl; 
-
 
                 return offsetToNextRec < pageOverlay->getOffset();
 

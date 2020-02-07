@@ -16,28 +16,26 @@ struct PageOverlayStruct
 class PageOverlay {
 	public:
                 char *getBytes() {
-                        return this->pageOverlay->bytes;
+                        return ((PageOverlayStruct *)this->pageHandle->getBytes())->bytes;
                 }
                 unsigned int getOffset() {
-                        return this->pageOverlay->offsetToNextUnwritten;
+                        return ((PageOverlayStruct *)this->pageHandle->getBytes())->offsetToNextUnwritten;
                 }
 
                 void setOffset(unsigned int newOffSet) {
-                        this->pageOverlay->offsetToNextUnwritten = newOffSet;
+                        ((PageOverlayStruct *)this->pageHandle->getBytes())->offsetToNextUnwritten = newOffSet;
                 }
 
                 MyDB_PageType getPageType() {
-                        return this->pageOverlay->pageType;
+                        return ((PageOverlayStruct *)this->pageHandle->getBytes())->pageType;
                 }
 
                 void setPageType(MyDB_PageType pageType) {
-                        this->pageOverlay->pageType = pageType;
+                        ((PageOverlayStruct *)this->pageHandle->getBytes())->pageType = pageType;
                 }
 
                 PageOverlay(MyDB_PageHandle pageHandle) {
                         this->pageHandle = pageHandle;
-                        this->pageOverlay = (PageOverlayStruct *)this->pageHandle->getBytes();
-                        // this->pageOverlay->offsetToNextUnwritten = 0;
                 };
 
                 ~PageOverlay() {};

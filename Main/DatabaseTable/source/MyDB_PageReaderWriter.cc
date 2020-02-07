@@ -37,7 +37,6 @@ bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 	char *end = (char *)pageHandle->getBytes() + this->pageSize; 
 
 
-	// cout << "MyDB_PageReaderWriter append called\n"; 
 	// cout << "bytes: " << (void *)bytes << " curOffset: " << curOffset << endl;
 	// cout << "Nextslot: " << (void *)nextSlot << " End: " << (void *)end << endl;
 
@@ -46,11 +45,14 @@ bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 		cout << "MyDB_PageReaderWriter return false\n"; 
 		return false;
 	}
-
+	
+	recordPtr->recordContentHasChanged();
     	void *next = recordPtr->toBinary (&(bytes[curOffset]));
-	pageOverlay->setOffset((char *) next - &(bytes[0]));
-	pageHandle->wroteBytes(); //does this matter
 
+
+	pageOverlay->setOffset((char *) next - &(bytes[0]));
+	pageHandle->wroteBytes(); //does this matter? lol apparently quite matters
+	cout << "MyDB_PageReaderWriter append success\n"; 
 	return true;
 }
 
