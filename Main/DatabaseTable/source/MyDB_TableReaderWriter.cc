@@ -42,7 +42,7 @@ MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t size) {
 	// for (i = curLastPage + 1; i <= size; i++) {
 	// 	addPageRW(i, false);
 	// }
-	cout << "operator : " << size << "lastpage: " << tablePtr->lastPage() << endl;
+	// cout << "operator : " << size << "lastpage: " << tablePtr->lastPage() << endl;
 	return *(pageRWs[size]);
 
 
@@ -70,12 +70,11 @@ void MyDB_TableReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 
 void MyDB_TableReaderWriter :: addPageRW (int pageNum, bool isLoad) {
 
-	cout << "Table Last Page: " << this->tablePtr->lastPage() << " Table Page Num: " << pageNum << endl;
+	// cout << "Table Last Page: " << this->tablePtr->lastPage() << " Table Page Num: " << pageNum << endl;
 
  	MyDB_PageHandle pageHandle = this->bufferMgr->getPage(this->tablePtr, pageNum);
 	MyDB_PageReaderWriter *pageRW = new MyDB_PageReaderWriter(pageHandle, this->bufferMgr->getPageSize(), isLoad);
 	pageRWs.push_back(pageRW); 
-	cout << "PageRW Size:" << pageRWs.size() << endl;
 	if (pageNum > tablePtr->lastPage()) 
 		tablePtr->setLastPage(pageNum);
 
@@ -89,10 +88,8 @@ void MyDB_TableReaderWriter :: loadFromTextFile (string text) {
 	string line;
 	int counter = 1;
 	while (getline(file, line)) {
-		cout << line << "\n";
 		this->recordBuffPtr->fromString(line);
 		recordBuffPtr->recordContentHasChanged();
-
 		append(this->recordBuffPtr);
 	}
 	file.close();

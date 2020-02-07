@@ -39,8 +39,8 @@ public:
 
 		// lastPage() gets the index not the length
 		// ! something wrong here
-		bool isLastPage = (count == this->tableReaderWriter->tablePtr->lastPage()); 
-		cout << " Last Page:" << isLastPage << "LastPage num: " << this->tableReaderWriter->tablePtr->lastPage() << endl;
+		bool isLastPage = (count == this->tableReaderWriter->tablePtr->lastPage() + 1); 
+		// cout << " Last Page:" << isLastPage << "LastPage num: " << this->tableReaderWriter->tablePtr->lastPage() << endl;
 
 		return !isLastPage;
 	};

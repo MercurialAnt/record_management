@@ -42,7 +42,7 @@ bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 
 
 	if (nextSlot > end) {
-		cout << "MyDB_PageReaderWriter return false\n"; 
+		// cout << "MyDB_PageReaderWriter return false\n"; 
 		return false;
 	}
 	
@@ -52,7 +52,7 @@ bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 
 	pageOverlay->setOffset((char *) next - &(bytes[0]));
 	pageHandle->wroteBytes(); //does this matter? lol apparently quite matters
-	cout << "MyDB_PageReaderWriter append success\n"; 
+	// cout << "MyDB_PageReaderWriter append success\n"; 
 	return true;
 }
 
