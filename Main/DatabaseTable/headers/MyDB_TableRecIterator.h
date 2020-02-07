@@ -17,7 +17,7 @@ public:
 	void getNext () {
 		// cout << "MyDB_TableRecIterator getNext called\n"; 
 		if (hasNext()) {
-			if (!(this->pageRecIterator->hasNext())) {
+			while (!(this->pageRecIterator->hasNext())) {
 				// ! somethign wrong here
 				MyDB_PageReaderWriter pageRW = (*(this->tableReaderWriter))[count++];
 				this->pageRecIterator = pageRW.getIterator(this->recordPtr);
