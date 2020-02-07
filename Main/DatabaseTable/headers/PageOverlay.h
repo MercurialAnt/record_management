@@ -24,6 +24,8 @@ class PageOverlay {
 
                 void setOffset(unsigned int newOffSet) {
                         ((PageOverlayStruct *)this->pageHandle->getBytes())->offsetToNextUnwritten = newOffSet;
+	                pageHandle->wroteBytes(); 
+
                 }
 
                 MyDB_PageType getPageType() {
@@ -43,7 +45,6 @@ class PageOverlay {
 
         private:
                 MyDB_PageHandle pageHandle;
-                PageOverlayStruct *pageOverlay;
               
 };
 

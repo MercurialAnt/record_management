@@ -44,7 +44,6 @@ public:
                 // char *nextSlot = pageOverlay->getBytes() + offsetToNextRec + recordPtr->getBinarySize();
                 // char *end = (char *)pageReaderWriter->pageHandle->getBytes() + pageReaderWriter->pageSize; 
                 // return nextSlot <= end;
-                bool hasNext = offsetToNextRec < pageOverlay->getOffset();
                 // cout << "MyDB_PageRecIterator hasNext: " << hasNext << endl; 
                 // cout << "iter offset: " << offsetToNextRec << " overlay offset: " <<  pageOverlay->getOffset() << endl; 
 

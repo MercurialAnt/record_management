@@ -86,7 +86,6 @@ void MyDB_TableReaderWriter :: loadFromTextFile (string text) {
 	ifstream file(text.c_str());
 	if (file.is_open()) {
 	string line;
-	int counter = 1;
 	while (getline(file, line)) {
 		this->recordBuffPtr->fromString(line);
 		recordBuffPtr->recordContentHasChanged();
