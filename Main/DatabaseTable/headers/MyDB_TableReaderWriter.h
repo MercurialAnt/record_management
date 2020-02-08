@@ -18,9 +18,6 @@ typedef shared_ptr <MyDB_TableReaderWriter> MyDB_TableReaderWriterPtr;
 class MyDB_TableReaderWriter {
 
 public:
-
-	// ANYTHING ELSE YOU NEED HERE
-
 	// create a table reader/writer for the specified table, using the specified
 	// buffer manager
 	MyDB_TableReaderWriter (MyDB_TablePtr forMe, MyDB_BufferManagerPtr myBuffer);
@@ -52,13 +49,10 @@ public:
 
 private:
 	friend class MyDB_TableRecIterator;
-	
 	MyDB_TablePtr tablePtr;
 	MyDB_BufferManagerPtr bufferMgr;
 	vector<MyDB_PageReaderWriter *> pageRWs;
 	MyDB_RecordPtr recordBuffPtr;
-	int numPages;
-	// ! do we need a field here? keep track of all pagereaderwriter?
 
 };
 

@@ -18,7 +18,6 @@ public:
 		// cout << "MyDB_TableRecIterator getNext called\n"; 
 		if (hasNext()) {
 			while (!(this->pageRecIterator->hasNext())) {
-				// ! somethign wrong here
 				MyDB_PageReaderWriter pageRW = (*(this->tableReaderWriter))[count++];
 				this->pageRecIterator = pageRW.getIterator(this->recordPtr);
 			}
@@ -34,15 +33,23 @@ public:
 			this->pageRecIterator = pageRW.getIterator(this->recordPtr);
 		}
 
-		if (this->pageRecIterator->hasNext())
+		if (this->pageRecIterator->hasNext()) {
 			return true;
+		}
 
-		// lastPage() gets the index not the length
-		// ! something wrong here
-		bool isLastPage = (count == this->tableReaderWriter->tablePtr->lastPage() + 1); 
-		// cout << " Last Page:" << isLastPage << "LastPage num: " << this->tableReaderWriter->tablePtr->lastPage() << endl;
+		/* Need to use a while loop to check every page in case of clears */
+		int temp = count;
+		int lastPage = tableReaderWriter->tablePtr->lastPage() + 1;
+		while (temp < lastPage) {
+			MyDB_PageReaderWriter pageRW = (*(this->tableReaderWriter))[temp];
+			MyDB_RecordIteratorPtr iter = pageRW.getIterator(this->recordPtr);
+			if (iter->hasNext()) {// next page exists
+				return true;
+			}
+			temp++;
+		}
+		return false;
 
-		return !isLastPage;
 	};
 
 	// destructor and contructor
@@ -56,8 +63,8 @@ public:
 	};
 private:
 	MyDB_TableReaderWriter *tableReaderWriter;
+	MyDB_RecordIteratorPtr pageRecIterator; // ! this is actually a MyDB_PageRecordIterator
 	MyDB_RecordPtr recordPtr;
 	int count;
-	MyDB_RecordIteratorPtr pageRecIterator; // ! this is actually a MyDB_PageRecordIterator
 };
 #endif

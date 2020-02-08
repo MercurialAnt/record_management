@@ -19,7 +19,6 @@ public:
         // put the contents of the next record in the file/page into the iterator record
 	// this should be called BEFORE the iterator record is first examined
 	void getNext () {
-                // cout << "MyDB_PageRecIterator getNext called\n"; 
                 if (hasNext()) {
                         char *bytes = pageOverlay->getBytes();
 
@@ -27,7 +26,6 @@ public:
                 	recordPtr->recordContentHasChanged();
 
                         this->offsetToNextRec = (char *) next - &(bytes[0]); 
-                        // cout << "MyDB_PageRecIterator offset: " << this->offsetToNextRec << endl; 
  
 
                 } else {
@@ -38,16 +36,7 @@ public:
 
 	// return true iff there is another record in the file/page
 	bool hasNext () {
-                // cout << pageReaderWriter->pageHandle << endl;
-                // cout << (void *)pageReaderWriter->pageHandle->getBytes() << endl;
-
-                // char *nextSlot = pageOverlay->getBytes() + offsetToNextRec + recordPtr->getBinarySize();
-                // char *end = (char *)pageReaderWriter->pageHandle->getBytes() + pageReaderWriter->pageSize; 
-                // return nextSlot <= end;
-                // cout << "MyDB_PageRecIterator hasNext: " << hasNext << endl; 
-                // cout << "iter offset: " << offsetToNextRec << " overlay offset: " <<  pageOverlay->getOffset() << endl; 
-
-                return offsetToNextRec < pageOverlay->getOffset();
+                return this->offsetToNextRec < pageOverlay->getOffset();
 
         }
 
@@ -63,7 +52,6 @@ public:
 
 
 private:
-
         MyDB_PageReaderWriter *pageReaderWriter;
         MyDB_RecordPtr recordPtr;
         PageOverlay *pageOverlay;

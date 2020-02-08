@@ -29,29 +29,19 @@ void MyDB_PageReaderWriter :: setType (MyDB_PageType pageType) {
 }
 
 bool MyDB_PageReaderWriter :: append (MyDB_RecordPtr recordPtr) {
-
-
 	char *bytes = pageOverlay->getBytes();
 	unsigned int curOffset = pageOverlay->getOffset();
 	char *nextSlot = bytes + curOffset + recordPtr->getBinarySize();
 	char *end = (char *)pageHandle->getBytes() + this->pageSize; 
 
-
-	// cout << "bytes: " << (void *)bytes << " curOffset: " << curOffset << endl;
-	// cout << "Nextslot: " << (void *)nextSlot << " End: " << (void *)end << endl;
-
-
 	if (nextSlot > end) {
-		// cout << "MyDB_PageReaderWriter return false\n"; 
 		return false;
 	}
 	
 	recordPtr->recordContentHasChanged();
     	void *next = recordPtr->toBinary (&(bytes[curOffset]));
-
-
 	pageOverlay->setOffset((char *) next - &(bytes[0]));
-	// cout << "MyDB_PageReaderWriter append success\n"; 
+	
 	return true;
 }
 

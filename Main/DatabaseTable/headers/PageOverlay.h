@@ -6,6 +6,7 @@
 
 class PageOverlay;
 typedef struct PageOverlayStruct PageOverlayStruct;
+
 struct PageOverlayStruct
 {
     unsigned int offsetToNextUnwritten;
@@ -17,15 +18,6 @@ class PageOverlay {
 	public:
                 char *getBytes() {
                         return ((PageOverlayStruct *)this->pageHandle->getBytes())->bytes;
-                }
-                unsigned int getOffset() {
-                        return ((PageOverlayStruct *)this->pageHandle->getBytes())->offsetToNextUnwritten;
-                }
-
-                void setOffset(unsigned int newOffSet) {
-                        ((PageOverlayStruct *)this->pageHandle->getBytes())->offsetToNextUnwritten = newOffSet;
-	                pageHandle->wroteBytes(); 
-
                 }
 
                 MyDB_PageType getPageType() {
@@ -39,6 +31,15 @@ class PageOverlay {
                 PageOverlay(MyDB_PageHandle pageHandle) {
                         this->pageHandle = pageHandle;
                 };
+
+                unsigned int getOffset() {
+                        return ((PageOverlayStruct *)this->pageHandle->getBytes())->offsetToNextUnwritten;
+                }
+
+                void setOffset(unsigned int newOffSet) {
+                        ((PageOverlayStruct *)this->pageHandle->getBytes())->offsetToNextUnwritten = newOffSet;
+	                pageHandle->wroteBytes();  // Must call wroteBytes() or else something dirty happens.
+                }
 
                 ~PageOverlay() {};
 

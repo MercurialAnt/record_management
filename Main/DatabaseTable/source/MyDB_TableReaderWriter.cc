@@ -19,10 +19,9 @@ MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tablePtr, MyDB_B
 	this->tablePtr = tablePtr;
 	this->bufferMgr = bufferMgr;
 	this->recordBuffPtr = make_shared <MyDB_Record>(this->tablePtr->getSchema());
-	this->numPages = 0;
-
 	int lastPage = this->tablePtr->lastPage();
 
+	/* Load the pages in if they were previously there. */
 	int i;
 	for (i = 0; i <= lastPage; i++) {
 		addPageRW(i, true);
@@ -31,18 +30,7 @@ MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tablePtr, MyDB_B
 }
 
 MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t size) {
-
-	// ! somethign wrong here
-	// int curLastPage = tablePtr->lastPage();
-	// if (size <= curLastPage) {
-	// 	return *(pageRWs[size]);	
-	// }
-
-	// int i;
-	// for (i = curLastPage + 1; i <= size; i++) {
-	// 	addPageRW(i, false);
-	// }
-	// cout << "operator : " << size << "lastpage: " << tablePtr->lastPage() << endl;
+	// ! somethign wrong here??? 
 	return *(pageRWs[size]);
 
 
@@ -63,7 +51,7 @@ void MyDB_TableReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 
 	if (!(last().append(recordPtr))) {
 		addPageRW(tablePtr->lastPage() + 1, false);
-		last().append(recordPtr);
+		append(recordPtr);
 	}
 
 }
@@ -71,30 +59,27 @@ void MyDB_TableReaderWriter :: append (MyDB_RecordPtr recordPtr) {
 void MyDB_TableReaderWriter :: addPageRW (int pageNum, bool isLoad) {
 
 	// cout << "Table Last Page: " << this->tablePtr->lastPage() << " Table Page Num: " << pageNum << endl;
-
  	MyDB_PageHandle pageHandle = this->bufferMgr->getPage(this->tablePtr, pageNum);
 	MyDB_PageReaderWriter *pageRW = new MyDB_PageReaderWriter(pageHandle, this->bufferMgr->getPageSize(), isLoad);
 	pageRWs.push_back(pageRW); 
+
+	/* Set the new last page. */
 	if (pageNum > tablePtr->lastPage()) 
 		tablePtr->setLastPage(pageNum);
 
 }
 
 void MyDB_TableReaderWriter :: loadFromTextFile (string text) {
-	cout << "Reading \n";
-
+	string line;
 	ifstream file(text.c_str());
 	if (file.is_open()) {
-	string line;
-	while (getline(file, line)) {
-		this->recordBuffPtr->fromString(line);
-		recordBuffPtr->recordContentHasChanged();
-		append(this->recordBuffPtr);
+		while (getline(file, line)) {
+			this->recordBuffPtr->fromString(line);
+			recordBuffPtr->recordContentHasChanged();
+			append(this->recordBuffPtr);
+		}
+		file.close();
 	}
-	file.close();
-	}
-	
-	
 
 }
 
@@ -109,6 +94,7 @@ void MyDB_TableReaderWriter :: writeIntoTextFile (string text) {
 	// 		myFile << "|" << ent.first << "|" << ent.second << "|\n";
 	// 	}
 	// }
+	// !! needs to finish
 	ofstream outFile (text, ofstream::out | ofstream::trunc); 
 
 }
