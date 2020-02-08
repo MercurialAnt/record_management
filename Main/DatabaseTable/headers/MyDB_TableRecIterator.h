@@ -38,15 +38,14 @@ public:
 		}
 
 		/* Need to use a while loop to check every page in case of clears */
-		int temp = count;
+		int temp;
 		int lastPage = tableReaderWriter->tablePtr->lastPage() + 1;
-		while (temp < lastPage) {
+		for (temp = count; temp < lastPage; temp++) {
 			MyDB_PageReaderWriter pageRW = (*(this->tableReaderWriter))[temp];
 			MyDB_RecordIteratorPtr iter = pageRW.getIterator(this->recordPtr);
 			if (iter->hasNext()) {// next page exists
 				return true;
 			}
-			temp++;
 		}
 		return false;
 
