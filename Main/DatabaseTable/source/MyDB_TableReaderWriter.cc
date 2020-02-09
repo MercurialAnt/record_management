@@ -29,6 +29,16 @@ MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tablePtr, MyDB_B
 
 }
 
+MyDB_TableReaderWriter :: ~MyDB_TableReaderWriter () {
+	// delete pageRWs;
+	for (auto page : pageRWs) {
+		delete page;
+	}
+	pageRWs.clear();
+	
+}
+
+
 MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t size) {
 	// ! somethign wrong here??? 
 	return *(pageRWs[size]);
@@ -88,14 +98,15 @@ MyDB_RecordIteratorPtr MyDB_TableReaderWriter :: getIterator (MyDB_RecordPtr rec
 }
 
 void MyDB_TableReaderWriter :: writeIntoTextFile (string text) {
-	// ofstream myFile (fName, ofstream::out | ofstream::trunc);
-	// if (myFile.is_open()) {
-	// 	for (auto const &ent : myData) {
-	// 		myFile << "|" << ent.first << "|" << ent.second << "|\n";
-	// 	}
-	// }
-	// !! needs to finish
-	ofstream outFile (text, ofstream::out | ofstream::trunc); 
+	ofstream myFile (text, ofstream::out | ofstream::trunc);
+	MyDB_RecordIteratorPtr iter = getIterator(recordBuffPtr);
+	if (myFile.is_open()) {
+		while (iter->hasNext()) {
+			iter->getNext();
+			myFile << recordBuffPtr << endl;
+		}
+		myFile.close();
+	}
 
 }
 

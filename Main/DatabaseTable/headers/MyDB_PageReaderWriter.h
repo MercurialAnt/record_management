@@ -34,6 +34,8 @@ public:
 	void setType (MyDB_PageType toMe);
 
 	MyDB_PageReaderWriter(MyDB_PageHandle pageHandle, size_t pageSize, bool isLoad);
+
+	~MyDB_PageReaderWriter();
 	
 private:
 	friend class MyDB_PageRecIterator;

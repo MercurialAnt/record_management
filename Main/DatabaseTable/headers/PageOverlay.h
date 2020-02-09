@@ -41,7 +41,9 @@ class PageOverlay {
 	                pageHandle->wroteBytes();  // Must call wroteBytes() or else something dirty happens.
                 }
 
-                ~PageOverlay() {};
+                ~PageOverlay() {
+                        cout << "hi"<< endl;
+                };
 
 
         private:

@@ -46,7 +46,6 @@ void initialize() {
 	// load it from a text file
 	supplierTable.loadFromTextFile("supplier.tbl");
 
-	int counter = 0;
 	MyDB_RecordPtr temp = supplierTable.getEmptyRecord();
 	MyDB_RecordIteratorPtr myIter = supplierTable.getIterator(temp);
 	// put the supplier table into the catalog
@@ -148,7 +147,6 @@ int main(int argc, char *argv[]) {
 			while (myIter->hasNext()) {
 				myIter->getNext();
 				counter++;
-				cout << counter << "\n";
 			}
 
 			cout << "shutdown manager..." << flush;

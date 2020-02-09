@@ -54,5 +54,9 @@ MyDB_PageReaderWriter :: MyDB_PageReaderWriter(MyDB_PageHandle pageHandle, size_
 		this->pageOverlay->setOffset(0);
 }
 
+MyDB_PageReaderWriter :: ~MyDB_PageReaderWriter() {
+	// delete pageOverlay;
+}
+
 
 #endif
