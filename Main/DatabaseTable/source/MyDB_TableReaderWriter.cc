@@ -40,7 +40,13 @@ MyDB_TableReaderWriter :: ~MyDB_TableReaderWriter () {
 
 
 MyDB_PageReaderWriter MyDB_TableReaderWriter :: operator [] (size_t size) {
-	// ! somethign wrong here??? 
+	if (tablePtr->lastPage() < static_cast<int>(size)) {
+		int i;
+		for (i = tablePtr->lastPage() + 1; i <= size; i++) {
+			addPageRW(i, false);
+		}
+	}
+
 	return *(pageRWs[size]);
 
 
